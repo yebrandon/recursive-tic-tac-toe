@@ -4,16 +4,14 @@ using UnityEngine;
 
 public class Box : MonoBehaviour
 {
-    private string type; //Types: "X", "O", "Empty" "Both", "TTT"
-    private TicTacToe parent;
-    private string[,] path;
+    protected string type = "Empty"; //Types: "X", "O", "Empty" "Both", "TTT"
+    protected TicTacToe parent = null;
+    protected int[,] path = new int[0, 2];
 
     // Start is called before the first frame update
     void Start()
     {
-        type = "empty";
-        parent = null;
-        path = new string[0, 2];
+
     }
 
     // Update is called once per frame
@@ -32,7 +30,7 @@ public class Box : MonoBehaviour
         this.parent = parent;
     }
 
-    public void setPath(string[,] path)
+    public void setPath(int[,] path)
     {
         this.path = path;
     }
@@ -47,7 +45,7 @@ public class Box : MonoBehaviour
         return parent;
     }
 
-    public string[,] getPath()
+    public int[,] getPath()
     {
         return path;
     }
