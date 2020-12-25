@@ -52,6 +52,68 @@ public class TicTacToe : Box
 
     public void checkWin(string type, int[] coords)
     {
+        if (type == "TTT")
+        {
+            // pass
+        }
+        else if (type == "EMPTY")
+        {
+            // pass
+        }
+        else
+        {
+            numFilled += 1;
+            // type is X or O, check if row/col/diagonal matches 
+            int x = coords[0];
+            int y = coords[1];
 
+            bool win = false;
+            int rowMatching = 0;
+            int colMatching = 0;
+
+            for (int i = 0; i < 3; i++)
+            {
+                if (grid[i, y] == type) // checks if the row matches the box being checked
+                {
+                    rowMatching += 1;
+                }
+
+                if (grid[x, i] == type) // checks if the column matches the box being checked 
+                {
+                    colMatching += 1;
+                }
+            }
+
+            if (rowMatching == 3 || colMatching == 3) // 3 in a row = win
+            {
+                win = true;
+            }
+
+            // checks diagonals 2 lazy 2 optimize
+            if (grid[0, 2] == grid[1, 1] && grid[1, 1] == grid[2, 0])
+            {
+                win = true;
+            }
+            if (grid[0, 0] == grid[1, 1] && grid[1, 1] == grid[2, 2])
+            {
+                win = true;
+            }
+
+            // do the stuff needed to be done if a win/tie is found
+            if (win)
+            {
+                // im an x or o
+                base.setType(type);
+                base.getParent().checkWin(base.getType(), base.getPath()[0]);
+
+            }
+            else if (numFilled == 0) // not a win, but grid filled -> tie
+            {
+                // me both now
+                base.setType("Both");
+                base.getParent().checkWin(base.getType(), base.getPath()[0]);
+            }
+            // else: nothing happens
+        }
     }
 }
