@@ -2,25 +2,59 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Box : MonoBehaviour
 {
     private string type; //Types: "X", "O", "Empty" "Both", "TTT"
     private TicTacToe parent;
     private string[,] path;
 
+    private TurnManager turnManager;
+    private SpriteRenderer spriteRenderer;
+    private Sprite XSprite;
+    private Sprite OSprite;
+    private Color hoverColor;
+
     // Start is called before the first frame update
     void Start()
     {
-        type = "empty";
+        type = "Empty";
         parent = null;
         path = new string[0, 2];
+        hoverColor = new Color(0, 1, 0, 1);
+
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
+
+    void OnMouseOver()
+    {
+        spriteRenderer.color = hoverColor;
+    }
+
+    void OnMouseDown()
+    {
+        if (type == "Empty")
+        {
+            if (turnManager.turnPlayer == "X")
+            {
+                spriteRenderer.sprite = XSprite;
+                type = "X";
+            }
+            else
+            {
+                spriteRenderer.sprite = OSprite;
+                type = "O";
+            }
+            turnManager.changeTurn();
+        }
+    }
+
 
     public void setType(string type)
     {
