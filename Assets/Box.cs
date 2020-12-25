@@ -9,11 +9,12 @@ public class Box : MonoBehaviour
     protected TicTacToe parent = null;
     protected int[,] path = new int[0, 2];
 
-    private TurnManager turnManager;
+    public TurnManager turnManager;
     private SpriteRenderer spriteRenderer;
-    private Sprite XSprite;
-    private Sprite OSprite;
+    public Sprite XSprite;
+    public Sprite OSprite;
     private Color hoverColor;
+    private Color baseColor;
 
     // Start is called before the first frame update
     void Start()
@@ -21,7 +22,8 @@ public class Box : MonoBehaviour
         type = "Empty";
         parent = null;
         path = new int[0, 2];
-        hoverColor = new Color(0, 1, 0, 1);
+        hoverColor = new Color(0.5f, 1, 0.5f, 1f);
+        baseColor = new Color(1, 1, 1, 1);
         spriteRenderer = GetComponent<SpriteRenderer>();
 
     }
@@ -37,8 +39,15 @@ public class Box : MonoBehaviour
         spriteRenderer.color = hoverColor;
     }
 
+    void OnMouseExit()
+    {
+        spriteRenderer.color = baseColor;
+    }
+
     void OnMouseDown()
     {
+        Debug.Log(type);
+        Debug.Log(turnManager.turnPlayer);
         if (type == "Empty")
         {
             if (turnManager.turnPlayer == "X")
