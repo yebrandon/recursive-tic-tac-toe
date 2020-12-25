@@ -18,16 +18,12 @@ public class Box : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-<<<<<<< HEAD
         type = "Empty";
         parent = null;
-        path = new string[0, 2];
+        path = new int[0, 2];
         hoverColor = new Color(0, 1, 0, 1);
-
         spriteRenderer = GetComponent<SpriteRenderer>();
-=======
 
->>>>>>> be15da58f41c835bd3b301b897bb22c73ee6b0e6
     }
 
     // Update is called once per frame
