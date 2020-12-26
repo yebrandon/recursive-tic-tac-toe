@@ -22,7 +22,6 @@ public class Box : MonoBehaviour
         type = "Empty";
         parent = null;
         path = new int[0, 2];
-        Debug.Log(path[0, 0]);
         hoverColor = new Color(0.5f, 1, 0.5f, 1f);
         baseColor = new Color(1, 1, 1, 1);
         spriteRenderer = GetComponent<SpriteRenderer>();
