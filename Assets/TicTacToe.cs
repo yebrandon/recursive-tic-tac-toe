@@ -7,10 +7,15 @@ public class TicTacToe : Box
     Box[,] grid = new Box[3, 3];
     int numFilled; //Number of boxes in the grid that are not empty
 
+    public static int maxLevel = 1;
+    protected int level = 1;
+
     // Start is called before the first frame update
     void Start()
     {
         initializeGrid();
+        this.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        this.gameObject.GetComponent<BoxCollider2D>().enabled = false;
     }
 
     // Update is called once per frame
@@ -21,15 +26,29 @@ public class TicTacToe : Box
 
     public void initializeGrid()
     {
+        GameObject newBox;
+
         for (int col = 0; col < 3; col++)
         {
             for (int row = 0; row < 3; row++)
             {
-                grid[col, row] = Instantiate(GameObject.Find("TheOrigin"), this.transform).GetComponent<Box>();
+                if (level == maxLevel)
+                {
+                    newBox = Instantiate(GameObject.Find("TheOrigin"), this.transform);
+                } else
+                {
+                    newBox = Instantiate(GameObject.Find("TheOriginTTT"), this.transform);
+                    newBox.GetComponent<TicTacToe>().setLevel(level + 1);
+                    newBox.GetComponent<TicTacToe>().enabled = true;
+                }
+
+                grid[col, row] = newBox.GetComponent<Box>();
                 grid[col, row].setParent(this);
-                grid[col, row].gameObject.GetComponent<Transform>().parent = this.gameObject.GetComponent<Transform>();
+                newBox.GetComponent<Transform>().parent = this.gameObject.GetComponent<Transform>();
                 grid[col, row].setPath(getNewPath(col, row));
 
+                newBox.GetComponent<Transform>().localScale = new Vector3(1f/3f, 1f/3f, 1f / 3f);
+                newBox.GetComponent<Transform>().localPosition = new Vector3((col - 1)/3f, (row - 1) / 3f, 0);
             }
         }
     }
@@ -126,5 +145,15 @@ public class TicTacToe : Box
             }
             // else: nothing happens
         }
+    }
+
+    public void setLevel(int lvl)
+    {
+        level = lvl;
+    }
+
+    public int getLevel()
+    {
+        return level;
     }
 }
