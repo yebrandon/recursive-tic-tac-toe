@@ -73,12 +73,12 @@ public class TicTacToe : Box
 
             for (int i = 0; i < 3; i++)
             {
-                if (grid[i, y] == type) // checks if the row matches the box being checked
+                if (grid[i, y].getType() == type) // checks if the row matches the box being checked
                 {
                     rowMatching += 1;
                 }
 
-                if (grid[x, i] == type) // checks if the column matches the box being checked 
+                if (grid[x, i].getType() == type) // checks if the column matches the box being checked 
                 {
                     colMatching += 1;
                 }
@@ -104,14 +104,18 @@ public class TicTacToe : Box
             {
                 // im an x or o
                 base.setType(type);
-                base.getParent().checkWin(base.getType(), base.getPath()[0]);
+                int pathLength = base.getPath().GetLength(2);
+                int[] thisCoords = new int[]{base.getPath()[pathLength, 0], base.getPath()[pathLength, 1]};
+                base.getParent().checkWin(base.getType(), thisCoords);
 
             }
             else if (numFilled == 0) // not a win, but grid filled -> tie
             {
                 // me both now
                 base.setType("Both");
-                base.getParent().checkWin(base.getType(), base.getPath()[0]);
+                int pathLength = base.getPath().GetLength(2);
+                int[] thisCoords = new int[] { base.getPath()[pathLength, 0], base.getPath()[pathLength, 1] };
+                base.getParent().checkWin(base.getType(), thisCoords);
             }
             // else: nothing happens
         }
