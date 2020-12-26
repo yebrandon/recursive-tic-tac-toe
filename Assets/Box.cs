@@ -25,7 +25,6 @@ public class Box : MonoBehaviour
         hoverColor = new Color(0.5f, 1, 0.5f, 1f);
         baseColor = new Color(1, 1, 1, 1);
         spriteRenderer = GetComponent<SpriteRenderer>();
-
     }
 
     // Update is called once per frame
@@ -36,7 +35,10 @@ public class Box : MonoBehaviour
 
     void OnMouseOver()
     {
-        spriteRenderer.color = hoverColor;
+        if (type == "Empty")
+        {
+            spriteRenderer.color = hoverColor;
+        }
     }
 
     void OnMouseExit()
@@ -46,19 +48,19 @@ public class Box : MonoBehaviour
 
     void OnMouseDown()
     {
-        Debug.Log(type);
-        Debug.Log(turnManager.turnPlayer);
         if (type == "Empty")
         {
             if (turnManager.turnPlayer == "X")
             {
                 spriteRenderer.sprite = XSprite;
                 type = "X";
+                spriteRenderer.color = baseColor;
             }
             else
             {
                 spriteRenderer.sprite = OSprite;
                 type = "O";
+                spriteRenderer.color = baseColor;
             }
             turnManager.changeTurn();
         }
