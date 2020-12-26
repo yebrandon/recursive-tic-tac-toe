@@ -116,32 +116,32 @@ public class TicTacToe : Box
             }
 
             // do the stuff needed to be done if a win/tie is found
-            if (win)
+            if (win || numFilled == 9)
             {
-                // im an x or o
-                base.setType(type);
+                if (base.getPath().GetLength(0) == 0)
+                {
+                    // there is no parent
+                    // end game
+                } else
+                {
+                    if (win)
+                    {
+                        // im an x or o
+                        base.setType(type);
+                    } else
+                    {
+                        // numFilled == 9
+                        base.setType("Both");
+                    }
 
-                int pathLength = base.getPath().GetLength(1);
+                    int pathLength = base.getPath().GetLength(0);
 
-                // get coordinates of this tictactoe grid relative to its parent
-                int thisX = base.getPath()[pathLength - 1, 0];
-                int thisY = base.getPath()[pathLength - 1, 0];
+                    // get coordinates of this tictactoe grid relative to its parent
+                    int thisX = base.getPath()[pathLength - 1, 0];
+                    int thisY = base.getPath()[pathLength - 1, 0];
 
-                base.getParent().checkWin(base.getType(), x, y);
-
-            }
-            else if (numFilled == 0) // not a win, but grid filled -> tie
-            {
-                // me both now
-                base.setType("Both");
-
-                int pathLength = base.getPath().GetLength(1);
-
-                // get coordinates of this tictactoe grid relative to its parent
-                int thisX = base.getPath()[pathLength - 1, 0];
-                int thisY = base.getPath()[pathLength - 1, 0];
-
-                base.getParent().checkWin(base.getType(), x, y);
+                    base.getParent().checkWin(base.getType(), thisX, thisY);
+                }
             }
             // else: nothing happens
         }
