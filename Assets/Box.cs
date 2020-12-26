@@ -65,7 +65,7 @@ public class Box : MonoBehaviour
                 spriteRenderer.color = baseColor;
             }
             turnManager.changeTurn();
-            parent.checkWin(type, path[path.Length - 1, 0], path.Length[path.Length - 1, 1]);
+            parent.checkWin(type, path[path.Length - 1, 0], path[path.Length - 1, 1]);
         }
     }
 
