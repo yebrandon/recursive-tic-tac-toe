@@ -22,6 +22,7 @@ public class Box : MonoBehaviour
         type = "Empty";
         parent = null;
         path = new int[0, 2];
+        Debug.Log(path[0, 0]);
         hoverColor = new Color(0.5f, 1, 0.5f, 1f);
         baseColor = new Color(1, 1, 1, 1);
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -48,6 +49,7 @@ public class Box : MonoBehaviour
 
     void OnMouseDown()
     {
+        // Update sprite and turn player
         if (type == "Empty")
         {
             if (turnManager.turnPlayer == "X")
@@ -63,6 +65,7 @@ public class Box : MonoBehaviour
                 spriteRenderer.color = baseColor;
             }
             turnManager.changeTurn();
+            parent.checkWin(type, path[path.Length - 1, 0], path.Length[path.Length - 1, 1]);
         }
     }
 
