@@ -280,7 +280,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   turnPlayer: X
   father: {fileID: 2100180827}
-  hovering: {fileID: 0}
 --- !u!4 &607979293
 Transform:
   m_ObjectHideFlags: 0

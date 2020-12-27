@@ -48,7 +48,7 @@ public class TurnManager : MonoBehaviour
         int[,] nextTurnPath = getNextTurnPath(clicked);
 
         TicTacToe TTT = getTicTacToe(nextTurnPath);
-        TTT.highlightBoxes(highlight);
+        TTT.highlightBoxes(highlight, turnPlayer);
     }
 
     public int[,] getNextTurnPath(Box clicked)

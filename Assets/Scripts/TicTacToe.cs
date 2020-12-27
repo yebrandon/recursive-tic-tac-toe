@@ -195,24 +195,25 @@ public class TicTacToe : Box
         }
     }
 
-    public void highlightBoxes(bool highlight)
+    public void highlightBoxes(bool highlight, string turnPlayer)
     {
-        if (highlight)
+        for (int col = 0; col < 3; col++)
         {
-            for (int col = 0; col < 3; col++)
+            for (int row = 0; row < 3; row++)
             {
-                for (int row = 0; row < 3; row++)
-                {
-                    grid[col, row].GetComponent<SpriteRenderer>().color = hoverColor;
-                }
-            }
-        } else
-        {
-            for (int col = 0; col < 3; col++)
-            {
-                for (int row = 0; row < 3; row++)
+                if (!highlight)
                 {
                     grid[col, row].GetComponent<SpriteRenderer>().color = baseColor;
+                }
+                else
+                {
+                    if(turnPlayer == "X")
+                    {
+                        grid[col, row].GetComponent<SpriteRenderer>().color = oHoverColor;
+                    } else
+                    {
+                        grid[col, row].GetComponent<SpriteRenderer>().color = xHoverColor;
+                    }
                 }
             }
         }

@@ -14,7 +14,8 @@ public class Box : MonoBehaviour
     public Sprite BothSprite;
     public Sprite OSprite;
     public Sprite XSprite;
-    protected Color hoverColor = new Color(0.5f, 1, 0.5f, 1f);
+    protected Color xHoverColor = new Color(0.5f, 1, 0.5f, 1f);
+    protected Color oHoverColor = new Color(0.5f, 0.5f, 1, 1f);
     protected Color baseColor = new Color(1, 1, 1, 1);
 
     // Start is called before the first frame update
@@ -26,22 +27,29 @@ public class Box : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
     }
 
     void OnMouseEnter()
     {
         if (type == "Empty")
         {
-            spriteRenderer.color = hoverColor;
-        }
+            turnManager.highlightNextTurn(this, true);
 
-        turnManager.highlightNextTurn(this, true);
+            if(turnManager.turnPlayer == "X")
+            {
+                spriteRenderer.color = xHoverColor;
+            } else
+            {
+                spriteRenderer.color = oHoverColor;
+            }
+        }
     }
 
     void OnMouseExit()
     {
-        spriteRenderer.color = baseColor;
         turnManager.highlightNextTurn(this, false);
+        spriteRenderer.color = baseColor;
     }
 
     void OnMouseDown()
