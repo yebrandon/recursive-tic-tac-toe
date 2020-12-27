@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class TicTacToe : Box
 {
-    Box[,] grid = new Box[3, 3];
-    int numFilled; //Number of boxes in the grid that are not empty
+    private Box[,] grid = new Box[3, 3];
+    private int numFilled; //Number of boxes in the grid that are not empty
 
-    public static int maxLevel = 3;
+    public static int maxLevel = 1;
     protected int level = 1;
 
     // Start is called before the first frame update
@@ -195,6 +195,40 @@ public class TicTacToe : Box
         }
     }
 
+    public void highlightBoxes(bool highlight)
+    {
+        if (highlight)
+        {
+            for (int col = 0; col < 3; col++)
+            {
+                for (int row = 0; row < 3; row++)
+                {
+                    grid[col, row].GetComponent<SpriteRenderer>().color = hoverColor;
+                }
+            }
+        } else
+        {
+            for (int col = 0; col < 3; col++)
+            {
+                for (int row = 0; row < 3; row++)
+                {
+                    grid[col, row].GetComponent<SpriteRenderer>().color = baseColor;
+                }
+            }
+        }
+    }
+
+    public void enableBoxes(bool enabled)
+    {
+        for (int col = 0; col < 3; col++)
+        {
+            for (int row = 0; row < 3; row++)
+            {
+                grid[col, row].GetComponent<Collider2D>().enabled = enabled;
+            }
+        }
+    }
+
     public void setLevel(int lvl)
     {
         level = lvl;
@@ -203,5 +237,10 @@ public class TicTacToe : Box
     public int getLevel()
     {
         return level;
+    }
+
+    public Box getBox(int col, int row)
+    {
+        return grid[col, row];
     }
 }
