@@ -7,15 +7,13 @@ public class TicTacToe : Box
     Box[,] grid = new Box[3, 3];
     int numFilled; //Number of boxes in the grid that are not empty
 
-    public static int maxLevel = 2;
+    public static int maxLevel = 3;
     protected int level = 1;
 
     // Start is called before the first frame update
     void Start()
     {
-        initializeGrid();
-        GetComponent<SpriteRenderer>().enabled = false;
-        GetComponent<BoxCollider2D>().enabled = false;
+
     }
 
     // Update is called once per frame
@@ -55,6 +53,7 @@ public class TicTacToe : Box
                 if (level != maxLevel)
                 {
                     newBox.GetComponent<TicTacToe>().enabled = true;
+                    newBox.GetComponent<TicTacToe>().initializeGrid();
                 }
             }
         }
