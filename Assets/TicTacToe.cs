@@ -7,15 +7,15 @@ public class TicTacToe : Box
     Box[,] grid = new Box[3, 3];
     int numFilled; //Number of boxes in the grid that are not empty
 
-    public static int maxLevel = 2;
+    public static int maxLevel = 1;
     protected int level = 1;
 
     // Start is called before the first frame update
     void Start()
     {
         initializeGrid();
-        this.gameObject.GetComponent<SpriteRenderer>().enabled = false;
-        this.gameObject.GetComponent<BoxCollider2D>().enabled = false;
+        GetComponent<SpriteRenderer>().enabled = false;
+        GetComponent<BoxCollider2D>().enabled = false;
     }
 
     // Update is called once per frame
@@ -44,11 +44,13 @@ public class TicTacToe : Box
                 }
 
                 grid[col, row].setParent(this);
-                newBox.GetComponent<Transform>().parent = this.gameObject.GetComponent<Transform>();
+                newBox.GetComponent<Transform>().parent = GetComponent<Transform>();
                 grid[col, row].setPath(getNewPath(col, row));
 
-                newBox.GetComponent<Transform>().localScale = new Vector3(1f/3f, 1f/3f, 1f / 3f);
-                newBox.GetComponent<Transform>().localPosition = new Vector3((col - 1)/3f, (row - 1) / 3f, 0);
+                newBox.GetComponent<Transform>().localScale = new Vector3(0.31f, 0.31f, 0.31f);
+                newBox.GetComponent<Transform>().localPosition = new Vector3((col - 1)/3f, (1 - row) / 3f, 0);
+
+                newBox.GetComponent<SpriteRenderer>().sortingOrder = GetComponent<SpriteRenderer>().sortingOrder + 1;
 
                 if(level != maxLevel)
                 {
@@ -134,6 +136,18 @@ public class TicTacToe : Box
                     {
                         // im an x or o
                         base.setType(type);
+                        turnOffBoxes();
+
+                        switch (type)
+                        {
+                            case "X":
+                                spriteRenderer.sprite = XSprite;
+                                break;
+                            case "O":
+                                spriteRenderer.sprite = OSprite;
+                                break;
+                        }
+
                     } else
                     {
                         // numFilled == 9
@@ -146,10 +160,28 @@ public class TicTacToe : Box
                     int thisX = base.getPath()[pathLength - 1, 0];
                     int thisY = base.getPath()[pathLength - 1, 0];
 
-                    base.getParent().checkWin(base.getType(), thisX, thisY);
+                    if(base.getParent() != null)
+                    {
+                        base.getParent().checkWin(base.getType(), thisX, thisY);
+                    }
                 }
             }
+
+            Debug.Log(win);
             // else: nothing happens
+        }
+    }
+
+    public void turnOffBoxes()
+    {
+        for (int col = 0; col < 3; col++)
+        {
+            for (int row = 0; row < 3; row++)
+            {
+                grid[col, row].GetComponent<SpriteRenderer>().enabled = false;
+                grid[col, row].GetComponent<Collider2D>().enabled = false;
+                grid[col, row].enabled = false;
+            }
         }
     }
 

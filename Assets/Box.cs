@@ -10,7 +10,7 @@ public class Box : MonoBehaviour
     protected int[,] path = new int[0, 2];
 
     public TurnManager turnManager;
-    private SpriteRenderer spriteRenderer;
+    protected SpriteRenderer spriteRenderer;
     public Sprite XSprite;
     public Sprite OSprite;
     private Color hoverColor;
@@ -19,9 +19,6 @@ public class Box : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        type = "Empty";
-        parent = null;
-        path = new int[0, 2];
         hoverColor = new Color(0.5f, 1, 0.5f, 1f);
         baseColor = new Color(1, 1, 1, 1);
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -30,7 +27,6 @@ public class Box : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
     }
 
     void OnMouseOver()
@@ -64,10 +60,23 @@ public class Box : MonoBehaviour
                 spriteRenderer.color = baseColor;
             }
             turnManager.changeTurn();
-            parent.checkWin(type, path[path.Length - 1, 0], path[path.Length - 1, 1]);
+            printPath();
+
+            parent.checkWin(type, path[path.GetLength(0) - 1, 0], path[path.GetLength(0) - 1, 1]);
         }
     }
 
+    public void printPath()
+    {
+        string coords = "";
+
+        for (int i = 0; i < path.GetLength(0); i++)
+        {
+            coords += "[" + path[i, 0] + ", " + path[i, 1] + "] ";
+        }
+
+        Debug.Log(coords);
+    }
 
     public void setType(string type)
     {
