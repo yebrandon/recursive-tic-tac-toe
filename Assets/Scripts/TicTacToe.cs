@@ -7,7 +7,7 @@ public class TicTacToe : Box
     private Box[,] grid = new Box[3, 3];
     private int numFilled; //Number of boxes in the grid that are not empty
 
-    public static int maxLevel = 2;
+    public static int maxLevel = 5;
     protected int level = 1;
 
     // Start is called before the first frame update
