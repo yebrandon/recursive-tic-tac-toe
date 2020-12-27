@@ -14,14 +14,12 @@ public class Box : MonoBehaviour
     public Sprite BothSprite;
     public Sprite OSprite;
     public Sprite XSprite;
-    private Color hoverColor;
-    private Color baseColor;
+    protected Color hoverColor = new Color(0.5f, 1, 0.5f, 1f);
+    protected Color baseColor = new Color(1, 1, 1, 1);
 
     // Start is called before the first frame update
     void Start()
     {
-        hoverColor = new Color(0.5f, 1, 0.5f, 1f);
-        baseColor = new Color(1, 1, 1, 1);
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
@@ -30,17 +28,20 @@ public class Box : MonoBehaviour
     {
     }
 
-    void OnMouseOver()
+    void OnMouseEnter()
     {
         if (type == "Empty")
         {
             spriteRenderer.color = hoverColor;
         }
+
+        turnManager.highlightNextTurn(this, true);
     }
 
     void OnMouseExit()
     {
         spriteRenderer.color = baseColor;
+        turnManager.highlightNextTurn(this, false);
     }
 
     void OnMouseDown()
@@ -61,13 +62,11 @@ public class Box : MonoBehaviour
                 spriteRenderer.color = baseColor;
             }
             turnManager.changeTurn(this);
-            printPath();
-
             parent.checkWin(type, path[path.GetLength(0) - 1, 0], path[path.GetLength(0) - 1, 1]);
         }
     }
 
-    public void printPath()
+    public static void printPath(int[,] path)
     {
         string coords = "";
 
@@ -76,6 +75,7 @@ public class Box : MonoBehaviour
             coords += "[" + path[i, 0] + ", " + path[i, 1] + "] ";
         }
 
+        Debug.Log(coords);
     }
 
     public void setType(string type)
