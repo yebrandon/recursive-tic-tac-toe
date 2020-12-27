@@ -5,26 +5,30 @@ using UnityEngine;
 public class TurnManager : MonoBehaviour
 {
     public string turnPlayer = "X";
-    public TicTacToe father;
+    //public TicTacToe father;
 
     // Start is called before the first frame update
     void Start()
     {
-        father.initializeGrid();
+
+        //father.initializeGrid();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
-    public void changeTurn(Box clicked){
+    public void changeTurn(Box clicked)
+    {
 
-        if(turnPlayer == "X"){
+        if (turnPlayer == "X")
+        {
             turnPlayer = "O";
         }
-        else{
+        else
+        {
             turnPlayer = "X";
         }
 
