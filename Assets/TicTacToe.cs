@@ -126,48 +126,45 @@ public class TicTacToe : Box
             // do the stuff needed to be done if a win/tie is found
             if (win || numFilled == 9)
             {
-                if (base.getPath().GetLength(0) == 0)
+                if (win)
                 {
-                    // there is no parent
-                    // end game
-                } else
-                {
-                    if (win)
-                    {
-                        // im an x or o
-                        base.setType(type);
-                        turnOffBoxes();
+                    // im an x or o
+                    base.setType(type);
+                    turnOffBoxes();
 
-                        switch (type)
-                        {
-                            case "X":
-                                spriteRenderer.sprite = XSprite;
-                                break;
-                            case "O":
-                                spriteRenderer.sprite = OSprite;
-                                break;
-                        }
-
-                    } else
+                    switch (type)
                     {
-                        // numFilled == 9
-                        base.setType("Both");
+                        case "X":
+                            GetComponent<SpriteRenderer>().sprite = XSprite;
+                            break;
+                        case "O":
+                            GetComponent<SpriteRenderer>().sprite = OSprite;
+                            break; 
                     }
 
-                    int pathLength = base.getPath().GetLength(0);
+                    GetComponent<SpriteRenderer>().enabled = true;
 
+                }
+                else
+                {
+                    // numFilled == 9
+                    base.setType("Both");
+                }
+
+                int pathLength = base.getPath().GetLength(0);
+
+                if (base.getParent() != null)
+                {
                     // get coordinates of this tictactoe grid relative to its parent
                     int thisX = base.getPath()[pathLength - 1, 0];
                     int thisY = base.getPath()[pathLength - 1, 0];
 
-                    if(base.getParent() != null)
-                    {
-                        base.getParent().checkWin(base.getType(), thisX, thisY);
-                    }
+                    base.getParent().checkWin(base.getType(), thisX, thisY);
                 }
-            }
 
-            Debug.Log(win);
+                // there is no parent
+                // end game
+            }
             // else: nothing happens
         }
     }
