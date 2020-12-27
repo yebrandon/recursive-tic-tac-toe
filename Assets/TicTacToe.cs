@@ -7,7 +7,7 @@ public class TicTacToe : Box
     Box[,] grid = new Box[3, 3];
     int numFilled; //Number of boxes in the grid that are not empty
 
-    public static int maxLevel = 1;
+    public static int maxLevel = 2;
     protected int level = 1;
 
     // Start is called before the first frame update
@@ -35,36 +35,42 @@ public class TicTacToe : Box
                 if (level == maxLevel)
                 {
                     newBox = Instantiate(GameObject.Find("TheOrigin"), this.transform);
+                    grid[col, row] = newBox.GetComponent<Box>();
                 } else
                 {
                     newBox = Instantiate(GameObject.Find("TheOriginTTT"), this.transform);
                     newBox.GetComponent<TicTacToe>().setLevel(level + 1);
-                    newBox.GetComponent<TicTacToe>().enabled = true;
+                    grid[col, row] = newBox.GetComponent<TicTacToe>();
                 }
 
-                grid[col, row] = newBox.GetComponent<Box>();
                 grid[col, row].setParent(this);
                 newBox.GetComponent<Transform>().parent = this.gameObject.GetComponent<Transform>();
                 grid[col, row].setPath(getNewPath(col, row));
 
                 newBox.GetComponent<Transform>().localScale = new Vector3(1f/3f, 1f/3f, 1f / 3f);
                 newBox.GetComponent<Transform>().localPosition = new Vector3((col - 1)/3f, (row - 1) / 3f, 0);
+
+                if(level != maxLevel)
+                {
+                    newBox.GetComponent<TicTacToe>().enabled = true;
+                }
             }
         }
     }
 
     private int[,] getNewPath(int col, int row)
     {
-        int[,] newPath = new int[path.Length + 1, 2];
+        int pathLength = path.GetLength(0);
+        int[,] newPath = new int[pathLength + 1, 2];
 
-        for (int i = 0; i < path.Length; i++)
+        for (int i = 0; i < pathLength; i++)
         {
             newPath[i, 0] = path[i, 0];
             newPath[i, 1] = path[i, 1];
         }
 
-        newPath[path.Length, 0] = col;
-        newPath[path.Length, 1] = row;
+        newPath[pathLength, 0] = col;
+        newPath[pathLength, 1] = row;
 
         return newPath;
     }
