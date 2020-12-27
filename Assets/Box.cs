@@ -11,8 +11,9 @@ public class Box : MonoBehaviour
 
     public TurnManager turnManager;
     protected SpriteRenderer spriteRenderer;
-    public Sprite XSprite;
+    public Sprite BothSprite;
     public Sprite OSprite;
+    public Sprite XSprite;
     private Color hoverColor;
     private Color baseColor;
 
@@ -75,7 +76,6 @@ public class Box : MonoBehaviour
             coords += "[" + path[i, 0] + ", " + path[i, 1] + "] ";
         }
 
-        Debug.Log(coords);
     }
 
     public void setType(string type)
@@ -108,4 +108,13 @@ public class Box : MonoBehaviour
         return path;
     }
 
+    public bool isX()
+    {
+        return getType() == "X" || getType() == "Both";
+    }
+
+    public bool isO()
+    {
+        return getType() == "O" || getType() == "Both";
+    }
 }

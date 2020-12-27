@@ -7,7 +7,7 @@ public class TicTacToe : Box
     Box[,] grid = new Box[3, 3];
     int numFilled; //Number of boxes in the grid that are not empty
 
-    public static int maxLevel = 1;
+    public static int maxLevel = 2;
     protected int level = 1;
 
     // Start is called before the first frame update
@@ -90,82 +90,88 @@ public class TicTacToe : Box
         else
         {
             numFilled += 1;
+            bool gameEnded = false;
 
-            bool win = false;
-            int rowMatching = 0;
-            int colMatching = 0;
+            int rowX = 0;
+            int rowO = 0;
+            int colX = 0;
+            int colO = 0;
+            int diag1X = 0; // diagonal of [0, 0], [1, 1], [2, 2]
+            int diag1O = 0;
+            int diag2X = 0; // diagonal of [0, 2], [1, 1], [2, 0]
+            int diag2O = 0;
 
             for (int i = 0; i < 3; i++)
             {
-                if (grid[i, y].getType() == type) // checks if the row matches the box being checked
+                if (grid[i, y].isX()) // checks row for X
                 {
-                    rowMatching += 1;
+                    rowX += 1;
                 }
-
-                if (grid[x, i].getType() == type) // checks if the column matches the box being checked 
+                if (grid[i, y].isO()) // checks row for O
                 {
-                    colMatching += 1;
+                    rowO += 1;
+                }
+                if (grid[x, i].isX()) // checks col for X
+                {
+                    colX += 1;
+                }
+                if (grid[x, i].isO()) // checks col for O
+                {
+                    colO += 1;
+                }
+                if (grid[i, i].isX()) // checks diag1 for X
+                {
+                    diag1X += 1;
+                }
+                if (grid[i, i].isO()) // checks diag1 for O
+                {
+                    diag1O += 1;
+                }
+                if (grid[i, 2-i].isX()) // checks diag2 for X
+                {
+                    diag2X += 1;
+                }
+                if (grid[i, 2-i].isO()) // checks diag2 for O
+                {
+                    diag2O += 1;
                 }
             }
 
-            if (rowMatching == 3 || colMatching == 3) // 3 in a row = win
+            if ((Mathf.Max(rowX, colX, diag1X, diag2X) == 3 && Mathf.Max(rowO, colO, diag1O, diag2O) == 3) || (numFilled == 9))
             {
-                win = true;
-            }
-
-            // checks diagonals 2 lazy 2 optimize
-            if (grid[0, 2] == grid[1, 1] && grid[1, 1] == grid[2, 0])
+                // X and O both won or they tied
+                setType("Both");
+                turnOffBoxes();
+                GetComponent<SpriteRenderer>().sprite = BothSprite;
+                GetComponent<SpriteRenderer>().enabled = true;
+                gameEnded = true;
+            } else if (Mathf.Max(rowX, colX, diag1X, diag2X) == 3) // X won
             {
-                win = true;
-            }
-            if (grid[0, 0] == grid[1, 1] && grid[1, 1] == grid[2, 2])
+                setType("X");
+                turnOffBoxes();
+                GetComponent<SpriteRenderer>().sprite = XSprite;
+                GetComponent<SpriteRenderer>().enabled = true;
+                gameEnded = true;
+            } else if (Mathf.Max(rowO, colO, diag1O, diag2O) == 3) // O won
             {
-                win = true;
+                setType("O");
+                turnOffBoxes();
+                GetComponent<SpriteRenderer>().sprite = OSprite;
+                GetComponent<SpriteRenderer>().enabled = true;
+                gameEnded = true;
             }
 
-            // do the stuff needed to be done if a win/tie is found
-            if (win || numFilled == 9)
+            if (gameEnded && getParent() != null)
             {
-                if (win)
-                {
-                    // im an x or o
-                    base.setType(type);
-                    turnOffBoxes();
+                // get parent to check
+                int pathLength = getPath().GetLength(0);
+                int thisX = getPath()[pathLength - 1, 0];
+                int thisY = getPath()[pathLength - 1, 0];
 
-                    switch (type)
-                    {
-                        case "X":
-                            GetComponent<SpriteRenderer>().sprite = XSprite;
-                            break;
-                        case "O":
-                            GetComponent<SpriteRenderer>().sprite = OSprite;
-                            break; 
-                    }
-
-                    GetComponent<SpriteRenderer>().enabled = true;
-
-                }
-                else
-                {
-                    // numFilled == 9
-                    base.setType("Both");
-                }
-
-                int pathLength = base.getPath().GetLength(0);
-
-                if (base.getParent() != null)
-                {
-                    // get coordinates of this tictactoe grid relative to its parent
-                    int thisX = base.getPath()[pathLength - 1, 0];
-                    int thisY = base.getPath()[pathLength - 1, 0];
-
-                    base.getParent().checkWin(base.getType(), thisX, thisY);
-                }
-
-                // there is no parent
-                // end game
+                Debug.Log(getType());
+                Debug.Log(thisX + " " + thisY);
+                getParent().checkWin(getType(), thisX, thisY);
             }
-            // else: nothing happens
         }
     }
 
@@ -177,6 +183,10 @@ public class TicTacToe : Box
             {
                 grid[col, row].GetComponent<SpriteRenderer>().enabled = false;
                 grid[col, row].GetComponent<Collider2D>().enabled = false;
+                if (grid[col, row] is TicTacToe)
+                {
+                    ((TicTacToe) grid[col, row]).turnOffBoxes();
+                }
                 grid[col, row].enabled = false;
             }
         }
