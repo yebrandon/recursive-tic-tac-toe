@@ -52,7 +52,7 @@ public class TicTacToe : Box
 
                 newBox.GetComponent<SpriteRenderer>().sortingOrder = GetComponent<SpriteRenderer>().sortingOrder + 1;
 
-                if(level != maxLevel)
+                if (level != maxLevel)
                 {
                     newBox.GetComponent<TicTacToe>().enabled = true;
                 }
@@ -137,9 +137,8 @@ public class TicTacToe : Box
                 }
             }
 
-            if ((Mathf.Max(rowX, colX, diag1X, diag2X) == 3 && Mathf.Max(rowO, colO, diag1O, diag2O) == 3) || (numFilled == 9))
+            if ((Mathf.Max(rowX, colX, diag1X, diag2X) == 3 && Mathf.Max(rowO, colO, diag1O, diag2O) == 3)) // both won
             {
-                // X and O both won or they tied
                 setType("Both");
                 turnOffBoxes();
                 GetComponent<SpriteRenderer>().sprite = BothSprite;
@@ -159,6 +158,13 @@ public class TicTacToe : Box
                 GetComponent<SpriteRenderer>().sprite = OSprite;
                 GetComponent<SpriteRenderer>().enabled = true;
                 gameEnded = true;
+            } else if (numFilled == 9) // tie
+            {
+                setType("Both");
+                turnOffBoxes();
+                GetComponent<SpriteRenderer>().sprite = BothSprite;
+                GetComponent<SpriteRenderer>().enabled = true;
+                gameEnded = true;
             }
 
             if (gameEnded && getParent() != null)
@@ -166,10 +172,8 @@ public class TicTacToe : Box
                 // get parent to check
                 int pathLength = getPath().GetLength(0);
                 int thisX = getPath()[pathLength - 1, 0];
-                int thisY = getPath()[pathLength - 1, 0];
+                int thisY = getPath()[pathLength - 1, 1];
 
-                Debug.Log(getType());
-                Debug.Log(thisX + " " + thisY);
                 getParent().checkWin(getType(), thisX, thisY);
             }
         }
