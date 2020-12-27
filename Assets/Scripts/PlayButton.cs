@@ -2,19 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayButton : MonoBehaviour
 {
-    // Start is called before the first frame update
     public int minInput;
     public int maxInput;
     public InputField inputField;
     public static int maxLevel;
 
+    // Start is called before the first frame update
     void Start()
     {
         minInput = 1;
-        maxInput = 3;
+        maxInput = 4;
     }
 
     // Update is called once per frame
@@ -31,5 +32,10 @@ public class PlayButton : MonoBehaviour
             maxLevel = Mathf.Clamp(maxLevel, minInput, maxInput);
             inputField.text = maxLevel.ToString();
         }
+    }
+
+    public void switchScene()
+    {
+        SceneManager.LoadScene("TestScene2");
     }
 }
