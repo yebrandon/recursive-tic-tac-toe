@@ -5,11 +5,12 @@ using UnityEngine;
 public class TurnManager : MonoBehaviour
 {
     public string turnPlayer = "X";
+    public TicTacToe father;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        father.initializeGrid();
     }
 
     // Update is called once per frame
