@@ -13,7 +13,8 @@ public class TicTacToe : Box
     // Start is called before the first frame update
     void Start()
     {
-
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        type = "TTT";
     }
 
     // Update is called once per frame
@@ -191,59 +192,6 @@ public class TicTacToe : Box
                     ((TicTacToe) grid[col, row]).turnOffBoxes();
                 }
                 grid[col, row].enabled = false;
-            }
-        }
-    }
-
-    public void highlightBoxes(bool highlight, string turnPlayer)
-    {
-        for (int col = 0; col < 3; col++)
-        {
-            for (int row = 0; row < 3; row++)
-            {
-                if (!highlight)
-                {
-                    grid[col, row].highlight(grid[col, row].getBaseColor());
-                }
-                else
-                {
-                    if(turnPlayer == "X")
-                    {
-                        grid[col, row].highlight(oHoverColor);
-                    } else
-                    {
-                        grid[col, row].highlight(xHoverColor);
-                    }
-                }
-            }
-        }
-    }
-
-    public void enableBoxes(bool enabled)
-    {
-        for (int col = 0; col < 3; col++)
-        {
-            for (int row = 0; row < 3; row++)
-            {
-                grid[col, row].GetComponent<Collider2D>().enabled = enabled;
-
-                if (enabled)
-                {
-                    if(turnManager.turnPlayer == "X") {
-                        grid[col, row].setBaseColor(xHoverColorFade);
-                        grid[col, row].highlight(xHoverColorFade);
-                    }
-
-                    else
-                    {
-                        grid[col, row].setBaseColor(oHoverColorFade);
-                        grid[col, row].highlight(oHoverColorFade);
-                    }
-                } else
-                {
-                    grid[col, row].setBaseColor(new Color(1, 1, 1, 1));
-                    grid[col, row].highlight(new Color(1, 1, 1, 1));
-                }
             }
         }
     }
