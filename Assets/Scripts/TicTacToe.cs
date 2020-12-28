@@ -7,7 +7,7 @@ public class TicTacToe : Box
     private Box[,] grid = new Box[3, 3];
     private int numFilled; //Number of boxes in the grid that are not empty
 
-    public static int maxLevel = 5;
+    public static int maxLevel = 2;
     protected int level = 1;
 
     // Start is called before the first frame update
@@ -203,16 +203,16 @@ public class TicTacToe : Box
             {
                 if (!highlight)
                 {
-                    grid[col, row].GetComponent<SpriteRenderer>().color = baseColor;
+                    grid[col, row].highlight(grid[col, row].getBaseColor());
                 }
                 else
                 {
                     if(turnPlayer == "X")
                     {
-                        grid[col, row].GetComponent<SpriteRenderer>().color = oHoverColor;
+                        grid[col, row].highlight(oHoverColor);
                     } else
                     {
-                        grid[col, row].GetComponent<SpriteRenderer>().color = xHoverColor;
+                        grid[col, row].highlight(xHoverColor);
                     }
                 }
             }
@@ -226,6 +226,24 @@ public class TicTacToe : Box
             for (int row = 0; row < 3; row++)
             {
                 grid[col, row].GetComponent<Collider2D>().enabled = enabled;
+
+                if (enabled)
+                {
+                    if(turnManager.turnPlayer == "X") {
+                        grid[col, row].setBaseColor(xHoverColorFade);
+                        grid[col, row].highlight(xHoverColorFade);
+                    }
+
+                    else
+                    {
+                        grid[col, row].setBaseColor(oHoverColorFade);
+                        grid[col, row].highlight(oHoverColorFade);
+                    }
+                } else
+                {
+                    grid[col, row].setBaseColor(new Color(1, 1, 1, 1));
+                    grid[col, row].highlight(new Color(1, 1, 1, 1));
+                }
             }
         }
     }

@@ -16,6 +16,8 @@ public class Box : MonoBehaviour
     public Sprite XSprite;
     protected Color xHoverColor = new Color(0.5f, 1, 0.5f, 1f);
     protected Color oHoverColor = new Color(0.5f, 0.5f, 1, 1f);
+    protected Color xHoverColorFade = new Color(0.3f, 0.7f, 0.3f, 1f);
+    protected Color oHoverColorFade = new Color(0.3f, 0.3f, 0.7f, 1f);
     protected Color baseColor = new Color(1, 1, 1, 1);
 
     // Start is called before the first frame update
@@ -38,18 +40,21 @@ public class Box : MonoBehaviour
 
             if(turnManager.turnPlayer == "X")
             {
-                spriteRenderer.color = xHoverColor;
+                highlight(xHoverColor);
             } else
             {
-                spriteRenderer.color = oHoverColor;
+                highlight(oHoverColor);
             }
         }
     }
 
     void OnMouseExit()
     {
-        turnManager.highlightNextTurn(this, false);
-        spriteRenderer.color = baseColor;
+        if (type == "Empty")
+        {
+            turnManager.highlightNextTurn(this, false);
+            highlight(baseColor);
+        }
     }
 
     void OnMouseDown()
@@ -61,14 +66,14 @@ public class Box : MonoBehaviour
             {
                 spriteRenderer.sprite = XSprite;
                 type = "X";
-                spriteRenderer.color = baseColor;
             }
             else
             {
                 spriteRenderer.sprite = OSprite;
                 type = "O";
-                spriteRenderer.color = baseColor;
             }
+
+            highlight(baseColor);
             turnManager.changeTurn(this);
             parent.checkWin(type, path[path.GetLength(0) - 1, 0], path[path.GetLength(0) - 1, 1]);
         }
@@ -124,5 +129,20 @@ public class Box : MonoBehaviour
     public bool isO()
     {
         return getType() == "O" || getType() == "Both";
+    }
+
+    public void highlight(Color color)
+    {
+        spriteRenderer.color = color;
+    }
+
+    public void setBaseColor(Color color)
+    {
+        baseColor = color;
+    }
+
+    public Color getBaseColor()
+    {
+        return baseColor;
     }
 }
