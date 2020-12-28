@@ -14,13 +14,15 @@ public class Box : MonoBehaviour
     public Sprite BothSprite;
     public Sprite OSprite;
     public Sprite XSprite;
+    public Sprite emptySprite;
     protected Color xHoverColor = new Color(0.5f, 1, 0.5f, 1f);
     protected Color oHoverColor = new Color(0.5f, 0.5f, 1, 1f);
-    public Color baseColor;
+    public Color baseColor = new Color(1, 1, 1, 1);
     public Color enabledColor = new Color(1, 1, 1, 1);
     public Color disabledColor = new Color(1, 1, 1, 0.5f);
-
     public Collider2D boxCollider;
+    protected Color xHoverColorFade = new Color(0.3f, 0.7f, 0.3f, 1f);
+    protected Color oHoverColorFade = new Color(0.3f, 0.3f, 0.7f, 1f);
 
     // Start is called before the first frame update
     void Start()
@@ -44,19 +46,25 @@ public class Box : MonoBehaviour
 
             if (turnManager.turnPlayer == "X")
             {
-                spriteRenderer.color = xHoverColor;
+                highlight(xHoverColor);
+                spriteRenderer.sprite = XSprite;
             }
             else
             {
-                spriteRenderer.color = oHoverColor;
+                highlight(oHoverColor);
+                spriteRenderer.sprite = OSprite;
             }
         }
     }
 
     void OnMouseExit()
     {
-        turnManager.highlightNextTurn(this, false);
-        spriteRenderer.color = baseColor;
+        if (type == "Empty")
+        {
+            turnManager.highlightNextTurn(this, false);
+            highlight(baseColor);
+            spriteRenderer.sprite = emptySprite;
+        }
     }
 
     void OnMouseDown()
@@ -64,24 +72,15 @@ public class Box : MonoBehaviour
         // Update sprite and turn player
         if (type == "Empty")
         {
-            if (turnManager.turnPlayer == "X")
-            {
-                spriteRenderer.sprite = XSprite;
-                type = "X";
-                spriteRenderer.color = baseColor;
-            }
-            else
-            {
-                spriteRenderer.sprite = OSprite;
-                type = "O";
-                spriteRenderer.color = baseColor;
-            }
+            type = turnManager.turnPlayer;
+
+            highlight(baseColor);
             turnManager.changeTurn(this);
             parent.checkWin(type, path[path.GetLength(0) - 1, 0], path[path.GetLength(0) - 1, 1]);
         }
     }
 
-    public static void printPath(int[,] path)
+    public static string printPath(int[,] path)
     {
         string coords = "";
 
@@ -89,6 +88,7 @@ public class Box : MonoBehaviour
         {
             coords += "[" + path[i, 0] + ", " + path[i, 1] + "] ";
         }
+        return coords;
     }
 
     public void setType(string type)
@@ -129,5 +129,90 @@ public class Box : MonoBehaviour
     public bool isO()
     {
         return getType() == "O" || getType() == "Both";
+    }
+
+    public void highlight(Color color)
+    {
+        spriteRenderer.color = color;
+    }
+
+    public void setBaseColor(Color color)
+    {
+        baseColor = color;
+    }
+
+    public Color getBaseColor()
+    {
+        return baseColor;
+    }
+
+    public void enableBoxes(bool enabled)
+    {
+        if (type == "TTT")
+        {
+            for (int col = 0; col < 3; col++)
+            {
+                for (int row = 0; row < 3; row++)
+                {
+                    ((TicTacToe)this).getBox(col, row).enableBoxes(enabled);
+                }
+            }
+        }
+        else
+        {
+            GetComponent<Collider2D>().enabled = enabled;
+
+            if (enabled)
+            {
+                if (turnManager.turnPlayer == "X")
+                {
+                    setBaseColor(xHoverColorFade);
+                    highlight(xHoverColorFade);
+                }
+
+                else
+                {
+                    setBaseColor(oHoverColorFade);
+                    highlight(oHoverColorFade);
+                }
+            }
+            else
+            {
+                setBaseColor(new Color(1, 1, 1, 1));
+                highlight(new Color(1, 1, 1, 1));
+            }
+        }
+    }
+
+    public void highlightBoxes(bool light, string turnPlayer)
+    {
+        if (type == "TTT")
+        {
+            for (int col = 0; col < 3; col++)
+            {
+                for (int row = 0; row < 3; row++)
+                {
+                    ((TicTacToe)this).getBox(col, row).highlightBoxes(light, turnPlayer);
+                }
+            }
+        }
+        else
+        {
+            if (!light)
+            {
+                highlight(getBaseColor());
+            }
+            else
+            {
+                if (turnPlayer == "X")
+                {
+                    highlight(oHoverColor);
+                }
+                else
+                {
+                    highlight(xHoverColor);
+                }
+            }
+        }
     }
 }

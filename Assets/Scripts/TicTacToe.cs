@@ -13,7 +13,8 @@ public class TicTacToe : Box
     // Start is called before the first frame update
     void Start()
     {
-
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        type = "TTT";
     }
 
     // Update is called once per frame
@@ -64,7 +65,6 @@ public class TicTacToe : Box
 
             }
         }
-        Debug.Log("Grid Initialized");
     }
 
     private int[,] getNewPath(int col, int row)
@@ -206,53 +206,6 @@ public class TicTacToe : Box
         }
     }
 
-    public void highlightBoxes(bool highlight, string turnPlayer)
-    {
-        for (int col = 0; col < 3; col++)
-        {
-            for (int row = 0; row < 3; row++)
-            {
-                Box box = grid[col, row];
-                if (!highlight)
-                {
-                    box.GetComponent<SpriteRenderer>().color = box.baseColor;
-                }
-                else
-                {
-                    if (turnPlayer == "X")
-                    {
-                        box.GetComponent<SpriteRenderer>().color = oHoverColor;
-                    }
-                    else
-                    {
-                        box.GetComponent<SpriteRenderer>().color = xHoverColor;
-                    }
-                }
-            }
-        }
-    }
-
-    public void enableBoxes(bool enabled)
-    {
-        for (int col = 0; col < 3; col++)
-        {
-            for (int row = 0; row < 3; row++)
-            {
-                Box box = grid[col, row];
-                box.boxCollider.enabled = enabled;
-                if (enabled)
-                {
-                    box.baseColor = enabledColor;
-                    box.spriteRenderer.color = box.baseColor;
-                }
-                else
-                {
-                    box.baseColor = disabledColor;
-                    box.spriteRenderer.color = box.baseColor;
-                }
-            }
-        }
-    }
 
     public void setLevel(int lvl)
     {

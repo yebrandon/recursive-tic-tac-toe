@@ -7,6 +7,7 @@ public class TurnManager : MonoBehaviour
     public string turnPlayer = "X";
     public TicTacToe father;
     public static List<TicTacToe> maxLevelTTTs;
+    private bool freedom = false;
 
     // Start is called before the first frame update
     void Start()
@@ -14,6 +15,9 @@ public class TurnManager : MonoBehaviour
         maxLevelTTTs = new List<TicTacToe>();
         father.initializeGrid();
         Invoke("enableFirstTTT", 1.0f);
+        father.enabled = true;
+        //father.initializeGrid();
+        //father.enableBoxes(true);
     }
 
     // Update is called once per frame
@@ -24,9 +28,15 @@ public class TurnManager : MonoBehaviour
 
     public void enableFirstTTT()
     {
-        TicTacToe selection = maxLevelTTTs[Random.Range(0, maxLevelTTTs.Count - 1)];
-        selection.enableBoxes(true);
-        Debug.Log("First TTT Enabled");
+        if (PlayButton.maxLevel == 1)
+        {
+            father.enableBoxes(true);
+        }
+        else
+        {
+            TicTacToe selection = maxLevelTTTs[Random.Range(0, maxLevelTTTs.Count - 1)];
+            selection.enableBoxes(true);
+        }
     }
 
     public void changeTurn(Box clicked)
@@ -46,9 +56,25 @@ public class TurnManager : MonoBehaviour
         int[,] nextTurnPath = getNextTurnPath(clicked);
         TicTacToe nextTTT = getTicTacToe(nextTurnPath);
 
-        clicked.getParent().enableBoxes(false);
-        nextTTT.enableBoxes(true);
+        if (freedom)
+        {
+            father.enableBoxes(false);
+            freedom = false;
+        }
+        else
+        {
+            clicked.getParent().enableBoxes(false);
+        }
 
+        if (nextTTT.getType() != "TTT")
+        {
+            father.enableBoxes(true);
+            freedom = true;
+        }
+        else
+        {
+            nextTTT.enableBoxes(true);
+        }
     }
 
     public void highlightNextTurn(Box clicked, bool highlight)
@@ -58,7 +84,15 @@ public class TurnManager : MonoBehaviour
         int[,] nextTurnPath = getNextTurnPath(clicked);
 
         TicTacToe TTT = getTicTacToe(nextTurnPath);
-        TTT.highlightBoxes(highlight, turnPlayer);
+
+        if (TTT.getType() != "TTT")
+        {
+            father.highlightBoxes(highlight, turnPlayer);
+        }
+        else
+        {
+            TTT.highlightBoxes(highlight, turnPlayer);
+        }
     }
 
     public int[,] getNextTurnPath(Box clicked)
@@ -81,6 +115,11 @@ public class TurnManager : MonoBehaviour
 
         for (int i = 0; i < path.GetLength(0); i++)
         {
+            if (TTT.getType() != "TTT")
+            {
+                return TTT;
+            }
+
             TTT = (TicTacToe)TTT.getBox(path[i, 0], path[i, 1]);
         }
 
