@@ -6,18 +6,27 @@ public class TurnManager : MonoBehaviour
 {
     public string turnPlayer = "X";
     public TicTacToe father;
+    public static List<TicTacToe> maxLevelTTTs;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        maxLevelTTTs = new List<TicTacToe>();
         father.initializeGrid();
+        Invoke("enableFirstTTT", 1.0f);
     }
 
     // Update is called once per frame
     void Update()
     {
 
+    }
+
+    public void enableFirstTTT()
+    {
+        TicTacToe selection = maxLevelTTTs[Random.Range(0, maxLevelTTTs.Count - 1)];
+        selection.enableBoxes(true);
+        Debug.Log("First TTT Enabled");
     }
 
     public void changeTurn(Box clicked)
@@ -39,6 +48,7 @@ public class TurnManager : MonoBehaviour
 
         clicked.getParent().enableBoxes(false);
         nextTTT.enableBoxes(true);
+
     }
 
     public void highlightNextTurn(Box clicked, bool highlight)
@@ -48,7 +58,7 @@ public class TurnManager : MonoBehaviour
         int[,] nextTurnPath = getNextTurnPath(clicked);
 
         TicTacToe TTT = getTicTacToe(nextTurnPath);
-        TTT.highlightBoxes(highlight);
+        TTT.highlightBoxes(highlight, turnPlayer);
     }
 
     public int[,] getNextTurnPath(Box clicked)

@@ -7,7 +7,7 @@ public class TicTacToe : Box
     private Box[,] grid = new Box[3, 3];
     private int numFilled; //Number of boxes in the grid that are not empty
 
-    public static int maxLevel = 2;
+    public static int maxLevel = PlayButton.maxLevel;
     protected int level = 1;
 
     // Start is called before the first frame update
@@ -34,7 +34,8 @@ public class TicTacToe : Box
                 {
                     newBox = Instantiate(GameObject.Find("TheOrigin"), this.transform);
                     grid[col, row] = newBox.GetComponent<Box>();
-                } else
+                }
+                else
                 {
                     newBox = Instantiate(GameObject.Find("TheOriginTTT"), this.transform);
                     newBox.GetComponent<TicTacToe>().setLevel(level + 1);
@@ -46,17 +47,24 @@ public class TicTacToe : Box
                 grid[col, row].setPath(getNewPath(col, row));
 
                 newBox.GetComponent<Transform>().localScale = new Vector3(0.31f, 0.31f, 0.31f);
-                newBox.GetComponent<Transform>().localPosition = new Vector3((col - 1)/3f, (1 - row) / 3f, 0);
+                newBox.GetComponent<Transform>().localPosition = new Vector3((col - 1) / 3f, (1 - row) / 3f, 0);
 
                 newBox.GetComponent<SpriteRenderer>().sortingOrder = GetComponent<SpriteRenderer>().sortingOrder + 1;
 
                 if (level != maxLevel)
                 {
+                    if (level == maxLevel - 1)
+                    {
+                        TurnManager.maxLevelTTTs.Add(newBox.GetComponent<TicTacToe>());
+
+                    }
                     newBox.GetComponent<TicTacToe>().enabled = true;
                     newBox.GetComponent<TicTacToe>().initializeGrid();
                 }
+
             }
         }
+        Debug.Log("Grid Initialized");
     }
 
     private int[,] getNewPath(int col, int row)
@@ -126,11 +134,11 @@ public class TicTacToe : Box
                 {
                     diag1O += 1;
                 }
-                if (grid[i, 2-i].isX()) // checks diag2 for X
+                if (grid[i, 2 - i].isX()) // checks diag2 for X
                 {
                     diag2X += 1;
                 }
-                if (grid[i, 2-i].isO()) // checks diag2 for O
+                if (grid[i, 2 - i].isO()) // checks diag2 for O
                 {
                     diag2O += 1;
                 }
@@ -143,21 +151,24 @@ public class TicTacToe : Box
                 GetComponent<SpriteRenderer>().sprite = BothSprite;
                 GetComponent<SpriteRenderer>().enabled = true;
                 gameEnded = true;
-            } else if (Mathf.Max(rowX, colX, diag1X, diag2X) == 3) // X won
+            }
+            else if (Mathf.Max(rowX, colX, diag1X, diag2X) == 3) // X won
             {
                 setType("X");
                 turnOffBoxes();
                 GetComponent<SpriteRenderer>().sprite = XSprite;
                 GetComponent<SpriteRenderer>().enabled = true;
                 gameEnded = true;
-            } else if (Mathf.Max(rowO, colO, diag1O, diag2O) == 3) // O won
+            }
+            else if (Mathf.Max(rowO, colO, diag1O, diag2O) == 3) // O won
             {
                 setType("O");
                 turnOffBoxes();
                 GetComponent<SpriteRenderer>().sprite = OSprite;
                 GetComponent<SpriteRenderer>().enabled = true;
                 gameEnded = true;
-            } else if (numFilled == 9) // tie
+            }
+            else if (numFilled == 9) // tie
             {
                 setType("Both");
                 turnOffBoxes();
@@ -188,31 +199,34 @@ public class TicTacToe : Box
                 grid[col, row].GetComponent<Collider2D>().enabled = false;
                 if (grid[col, row] is TicTacToe)
                 {
-                    ((TicTacToe) grid[col, row]).turnOffBoxes();
+                    ((TicTacToe)grid[col, row]).turnOffBoxes();
                 }
                 grid[col, row].enabled = false;
             }
         }
     }
 
-    public void highlightBoxes(bool highlight)
+    public void highlightBoxes(bool highlight, string turnPlayer)
     {
-        if (highlight)
+        for (int col = 0; col < 3; col++)
         {
-            for (int col = 0; col < 3; col++)
+            for (int row = 0; row < 3; row++)
             {
-                for (int row = 0; row < 3; row++)
+                Box box = grid[col, row];
+                if (!highlight)
                 {
-                    grid[col, row].GetComponent<SpriteRenderer>().color = hoverColor;
+                    box.GetComponent<SpriteRenderer>().color = box.baseColor;
                 }
-            }
-        } else
-        {
-            for (int col = 0; col < 3; col++)
-            {
-                for (int row = 0; row < 3; row++)
+                else
                 {
-                    grid[col, row].GetComponent<SpriteRenderer>().color = baseColor;
+                    if (turnPlayer == "X")
+                    {
+                        box.GetComponent<SpriteRenderer>().color = oHoverColor;
+                    }
+                    else
+                    {
+                        box.GetComponent<SpriteRenderer>().color = xHoverColor;
+                    }
                 }
             }
         }
@@ -224,7 +238,18 @@ public class TicTacToe : Box
         {
             for (int row = 0; row < 3; row++)
             {
-                grid[col, row].GetComponent<Collider2D>().enabled = enabled;
+                Box box = grid[col, row];
+                box.boxCollider.enabled = enabled;
+                if (enabled)
+                {
+                    box.baseColor = enabledColor;
+                    box.spriteRenderer.color = box.baseColor;
+                }
+                else
+                {
+                    box.baseColor = disabledColor;
+                    box.spriteRenderer.color = box.baseColor;
+                }
             }
         }
     }
@@ -243,4 +268,5 @@ public class TicTacToe : Box
     {
         return grid[col, row];
     }
+
 }

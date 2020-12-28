@@ -10,17 +10,25 @@ public class Box : MonoBehaviour
     protected int[,] path = new int[0, 2];
 
     public TurnManager turnManager;
-    protected SpriteRenderer spriteRenderer;
+    public SpriteRenderer spriteRenderer;
     public Sprite BothSprite;
     public Sprite OSprite;
     public Sprite XSprite;
-    protected Color hoverColor = new Color(0.5f, 1, 0.5f, 1f);
-    protected Color baseColor = new Color(1, 1, 1, 1);
+    protected Color xHoverColor = new Color(0.5f, 1, 0.5f, 1f);
+    protected Color oHoverColor = new Color(0.5f, 0.5f, 1, 1f);
+    public Color baseColor;
+    public Color enabledColor = new Color(1, 1, 1, 1);
+    public Color disabledColor = new Color(1, 1, 1, 0.5f);
+
+    public Collider2D boxCollider;
 
     // Start is called before the first frame update
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        boxCollider = GetComponent<Collider2D>();
+        baseColor = disabledColor;
+        spriteRenderer.color = baseColor;
     }
 
     // Update is called once per frame
@@ -32,16 +40,23 @@ public class Box : MonoBehaviour
     {
         if (type == "Empty")
         {
-            spriteRenderer.color = hoverColor;
-        }
+            turnManager.highlightNextTurn(this, true);
 
-        turnManager.highlightNextTurn(this, true);
+            if (turnManager.turnPlayer == "X")
+            {
+                spriteRenderer.color = xHoverColor;
+            }
+            else
+            {
+                spriteRenderer.color = oHoverColor;
+            }
+        }
     }
 
     void OnMouseExit()
     {
-        spriteRenderer.color = baseColor;
         turnManager.highlightNextTurn(this, false);
+        spriteRenderer.color = baseColor;
     }
 
     void OnMouseDown()
@@ -74,8 +89,6 @@ public class Box : MonoBehaviour
         {
             coords += "[" + path[i, 0] + ", " + path[i, 1] + "] ";
         }
-
-        Debug.Log(coords);
     }
 
     public void setType(string type)
