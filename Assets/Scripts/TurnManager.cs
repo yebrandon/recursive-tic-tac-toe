@@ -125,4 +125,19 @@ public class TurnManager : MonoBehaviour
 
         return TTT;
     }
+
+    public void destroyTTT()
+    {
+        for (int col = 0; col < 3; col++)
+        {
+            for (int row = 0; row < 3; row++)
+            {
+                father.getBox(col, row).destroySelf();
+            }
+        }
+
+        turnPlayer = "X";
+        freedom = false;
+        PlayButton.maxLevel = 3;
+    }
 }

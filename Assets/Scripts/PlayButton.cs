@@ -36,6 +36,10 @@ public class PlayButton : MonoBehaviour
 
     public void switchScene()
     {
+        if (string.IsNullOrEmpty(inputField.text))
+        {
+            inputField.text = "1".ToString();
+        }
         SceneManager.LoadScene("TestScene2");
     }
 }

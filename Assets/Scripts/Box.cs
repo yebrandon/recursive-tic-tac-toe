@@ -75,8 +75,8 @@ public class Box : MonoBehaviour
             type = turnManager.turnPlayer;
 
             highlight(baseColor);
-            turnManager.changeTurn(this);
             parent.checkWin(type, path[path.GetLength(0) - 1, 0], path[path.GetLength(0) - 1, 1]);
+            turnManager.changeTurn(this);
         }
     }
 
@@ -214,5 +214,10 @@ public class Box : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void destroySelf()
+    {
+        Destroy(this.GetComponent<Box>());
     }
 }

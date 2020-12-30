@@ -25,6 +25,11 @@ public class TicTacToe : Box
 
     public void initializeGrid()
     {
+        maxLevel = PlayButton.maxLevel;
+        initializeGridHelper();
+    }
+    private void initializeGridHelper()
+    {
         GameObject newBox;
 
         for (int col = 0; col < 3; col++)
@@ -60,7 +65,7 @@ public class TicTacToe : Box
 
                     }
                     newBox.GetComponent<TicTacToe>().enabled = true;
-                    newBox.GetComponent<TicTacToe>().initializeGrid();
+                    newBox.GetComponent<TicTacToe>().initializeGridHelper();
                 }
 
             }
@@ -222,4 +227,20 @@ public class TicTacToe : Box
         return grid[col, row];
     }
 
+    new public void destroySelf()
+    {
+        // recursively destroy the tic tac toe board
+        // base case in superclass (box)
+        for (int col = 0; col < 3; col++)
+        {
+            for (int row = 0; row < 3; row++)
+            {
+                if (grid[col, row] != null)
+                {
+                    grid[col, row].destroySelf();
+                }
+                Destroy(this.GetComponent<TicTacToe>());
+            }
+        }
+    }
 }
