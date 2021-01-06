@@ -14,6 +14,7 @@ public class Client : MonoBehaviour
     private NetworkStream stream;
     private StreamWriter writer;
     private StreamReader reader;
+    public GameManager manager;
 
     private void Start()
     {
@@ -39,7 +40,7 @@ public class Client : MonoBehaviour
 
         catch (Exception e)
         {
-            Debug.Log("Socket error: " + e);
+            throw e;
         }
 
         return socketReady;
@@ -65,9 +66,17 @@ public class Client : MonoBehaviour
     {
         if (!socketReady) return;
 
-        writer.WriteLine(data);
-        writer.Flush();
-        Debug.Log("sent!");
+        try
+        {
+            writer.WriteLine(data);
+            writer.Flush();
+        }
+        catch (Exception e)
+        {
+            CloseSocket(e.ToString());
+        }
+
+        Debug.Log("sent " + data);
     }
     private void OnIncomingData(string data)
     {
@@ -78,10 +87,30 @@ public class Client : MonoBehaviour
         {
             case "S/Who":
 
-                Debug.Log("sending name!");
                 Send("C/Name|" + clientName);
                 break;
-            
+
+            case "S/CurrentGames":
+
+                manager.SetUpLobbyUI("");
+
+                for(int i = 1; i < aData.Length; i++)
+                {
+                    string[] lobbyData = aData[i].Split('~');
+                    manager.AddNewGameLobby(int.Parse(lobbyData[0]), lobbyData[1]);
+                }
+
+                break;
+
+            case "S/NewGame":
+
+                manager.AddNewGameLobby(int.Parse(aData[1]), "(1/2)");
+                break;
+
+            case "S/Disconnect":
+                CloseSocket("Server was closed.");
+                break;
+
             default:
 
                 Debug.Log("Unknown data: " + data);
@@ -91,17 +120,19 @@ public class Client : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        CloseSocket();
+        CloseSocket("");
     }
 
     private void OnDisable()
     {
-        CloseSocket();
+        CloseSocket("");
     }
 
-    public void CloseSocket()
+    public void CloseSocket(string message)
     {
         if (!socketReady) return;
+
+        manager.SetUpConnectMenu(message);
 
         writer.Close();
         reader.Close();
