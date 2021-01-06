@@ -9,7 +9,7 @@ public class PlayButton : MonoBehaviour
     public int minInput;
     public int maxInput;
     public InputField inputField;
-    public static int maxLevel;
+    public static int maxLevel = 1;
 
     // Start is called before the first frame update
     void Start()
