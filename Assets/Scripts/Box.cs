@@ -44,7 +44,7 @@ public class Box : MonoBehaviour
         {
             turnManager.highlightNextTurn(this, true);
 
-            if (turnManager.turnPlayer == "X")
+            if (turnManager.currentTurn == "X")
             {
                 highlight(xHoverColor);
                 spriteRenderer.sprite = XSprite;
@@ -77,7 +77,7 @@ public class Box : MonoBehaviour
         // Update sprite and turn player
         if (type == "Empty")
         {
-            type = turnManager.turnPlayer;
+            type = turnManager.currentTurn;
 
             highlight(baseColor);
             parent.checkWin(type, path[path.GetLength(0) - 1, 0], path[path.GetLength(0) - 1, 1]);
@@ -169,7 +169,7 @@ public class Box : MonoBehaviour
 
             if (enabled)
             {
-                if (turnManager.turnPlayer == "X")
+                if (turnManager.currentTurn == "X")
                 {
                     setBaseColor(xHoverColorFade);
                     highlight(xHoverColorFade);

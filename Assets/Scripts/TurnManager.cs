@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class TurnManager : MonoBehaviour
 {
-    public string turnPlayer = "X";
+    public string currentTurn = "X";
+    public string playerTurn = "X";
     public TicTacToe father;
     public static List<TicTacToe> maxLevelTTTs;
     private bool freedom = false;
@@ -14,7 +15,6 @@ public class TurnManager : MonoBehaviour
     {
         maxLevelTTTs = new List<TicTacToe>();
         father.initializeGrid();
-        Invoke("enableFirstTTT", 1.0f);
         father.enabled = true;
         //father.initializeGrid();
         //father.enableBoxes(true);
@@ -26,29 +26,31 @@ public class TurnManager : MonoBehaviour
 
     }
 
-    public void enableFirstTTT()
+    public void enableFirstTTT(int num)
     {
-        if (PlayButton.maxLevel == 1)
+        if(playerTurn == currentTurn)
         {
-            father.enableBoxes(true);
-        }
-        else
-        {
-            TicTacToe selection = maxLevelTTTs[Random.Range(0, maxLevelTTTs.Count - 1)];
-            selection.enableBoxes(true);
+            if (PlayButton.maxLevel == 1)
+            {
+                father.enableBoxes(true);
+            }
+            else
+            {
+                TicTacToe selection = maxLevelTTTs[num];
+                selection.enableBoxes(true);
+            }
         }
     }
 
     public void changeTurn(Box clicked)
     {
-
-        if (turnPlayer == "X")
+        if (currentTurn == "X")
         {
-            turnPlayer = "O";
+            currentTurn = "O";
         }
         else
         {
-            turnPlayer = "X";
+            currentTurn = "X";
         }
 
         if (TicTacToe.maxLevel == 1) return;
@@ -87,11 +89,11 @@ public class TurnManager : MonoBehaviour
 
         if (TTT.getType() != "TTT")
         {
-            father.highlightBoxes(highlight, turnPlayer);
+            father.highlightBoxes(highlight, currentTurn);
         }
         else
         {
-            TTT.highlightBoxes(highlight, turnPlayer);
+            TTT.highlightBoxes(highlight, currentTurn);
         }
     }
 
@@ -136,7 +138,7 @@ public class TurnManager : MonoBehaviour
             }
         }
 
-        turnPlayer = "X";
+        currentTurn = "X";
         freedom = false;
         PlayButton.maxLevel = 3;
     }
