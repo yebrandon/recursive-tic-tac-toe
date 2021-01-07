@@ -9,6 +9,7 @@ public class TurnManager : MonoBehaviour
     public TicTacToe father;
     public static List<TicTacToe> maxLevelTTTs;
     private bool freedom = false;
+    private GameManager gameManager;
 
     // Start is called before the first frame update
     void Start()
@@ -16,6 +17,9 @@ public class TurnManager : MonoBehaviour
         maxLevelTTTs = new List<TicTacToe>();
         father.initializeGrid();
         father.enabled = true;
+
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        gameManager.NotifySceneLoaded();
         //father.initializeGrid();
         //father.enableBoxes(true);
     }
@@ -126,6 +130,11 @@ public class TurnManager : MonoBehaviour
         }
 
         return TTT;
+    }
+
+    public void Surrender()
+    {
+        gameManager.client.BroadcastMessage("C/Surrender");
     }
 
     public void destroyTTT()

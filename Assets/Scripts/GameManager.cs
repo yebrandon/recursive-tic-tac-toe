@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -23,13 +24,19 @@ public class GameManager : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    { 
-        if(Instance != null) Destroy(gameObject);
+    {
+        if (Instance != null) {
+
+            client = Instance.client;
+            Instance.client.manager = this;
+            settings = Instance.settings;
+            Destroy(Instance.gameObject);
+        };
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        OnSceneLoaded();
+        initialize();
 
         connectToServerMenu.SetActive(true);
         gameLobbyMenu.SetActive(false);
@@ -38,16 +45,19 @@ public class GameManager : MonoBehaviour
         games = new GameInstanceClient[16];
     }
 
-    void OnSceneLoaded()
+    public void initialize()
     {
-        Transform canvas =  GameObject.Find("Canvas").transform;
+        if (SceneManager.GetActiveScene().name.Equals("ConnectToServer"))
+        {
+            Transform canvas = GameObject.Find("Canvas").transform;
 
-        connectToServerMenu = canvas.Find("ConnectToServer").gameObject;
-        gameLobbyMenu = canvas.Find("GameLobby").gameObject;
-        serverMenu = canvas.Find("Server").gameObject;
+            connectToServerMenu = canvas.Find("ConnectToServer").gameObject;
+            gameLobbyMenu = canvas.Find("GameLobby").gameObject;
+            serverMenu = canvas.Find("Server").gameObject;
 
-        connectingStatus = connectToServerMenu.transform.Find("ConnectingLabel").GetComponent<Text>();
-        serverLobbyStatus = serverMenu.transform.Find("ServerMessage").GetComponent<Text>();
+            connectingStatus = connectToServerMenu.transform.Find("ConnectingLabel").GetComponent<Text>();
+            serverLobbyStatus = serverMenu.transform.Find("ServerMessage").GetComponent<Text>();
+        }
     }
 
     public void ConnectToServerButton()
@@ -61,7 +71,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForFixedUpdate();
 
         string hostAddress = GameObject.Find("HostInput").GetComponent<InputField>().text;
-        if (hostAddress.Equals("")) hostAddress = "135.0.152.209";
+        if (hostAddress.Equals("")) hostAddress = "127.0.0.1";
 
         try
         {
@@ -75,7 +85,6 @@ public class GameManager : MonoBehaviour
 
             client.manager = this;
             client.inGame = false;
-            client.multiplayer = true;
 
             client.ConnectToServer(hostAddress, 6321);
         }
@@ -239,9 +248,22 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void CallLateCMD()
+    {
+        if(client != null)
+        {
+            client.RunLateCMD();
+        }
+    }
+
+    public void NotifySceneLoaded()
+    {
+        client.Send("C/SceneLoaded|" + settings.id);
+    }
+
     public void Disconnect()
     {
-        client.CloseSocket("");
+        client.CloseSocket();
     }
 
 }

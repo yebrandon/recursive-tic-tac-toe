@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Client : MonoBehaviour
 {
@@ -15,9 +16,11 @@ public class Client : MonoBehaviour
     private StreamWriter writer;
     private StreamReader reader;
     public GameManager manager;
+    public TurnManager turnManager;
+
+    public string serverCommand = null;
 
     public bool inGame;
-    public bool multiplayer;
 
     private void Start()
     {
@@ -76,7 +79,8 @@ public class Client : MonoBehaviour
         }
         catch (Exception e)
         {
-            CloseSocket(e.ToString());
+            CloseSocket();
+            manager.SetUpConnectMenu(e.ToString());
         }
 
         Debug.Log("sent " + data);
@@ -120,11 +124,21 @@ public class Client : MonoBehaviour
                 break;
 
             case "S/UpdateGameSettings":
+
                 manager.UpdateGameSettings(aData[3], aData[4], aData[5], int.Parse(aData[6]));
                 break;
 
             case "S/Disconnect":
-                CloseSocket("Server was closed.");
+
+                if (inGame)
+                {
+                    inGame = false;
+                    SceneManager.LoadScene("ConnectToServer");
+                    serverCommand = data;
+                }
+
+                CloseSocket();
+                manager.SetUpConnectMenu("Server was closed.");
                 break;
 
             case "S/GameDeleted":
@@ -135,6 +149,32 @@ public class Client : MonoBehaviour
                 manager.UpdateGameStatus(int.Parse(aData[1]), aData[2]);
                 break;
 
+            case "S/LoadGame":
+
+                if (!inGame)
+                {
+                    PlayButton.maxLevel = int.Parse(aData[1]);
+                    inGame = true;
+                    SceneManager.LoadScene("TestScene2");
+                }
+
+                break;
+
+            case "S/StartGame":
+
+                turnManager = GameObject.Find("TurnManager").GetComponent<TurnManager>();
+                turnManager.playerTurn = aData[1];
+                turnManager.enableFirstTTT(int.Parse(aData[2]));
+
+                break;
+
+            case "S/OpponentDC":
+
+                serverCommand = data;
+                inGame = false;
+                SceneManager.LoadScene("ConnectToServer");
+                break;
+
             default:
 
                 Debug.Log("Unknown data: " + data);
@@ -142,21 +182,61 @@ public class Client : MonoBehaviour
         }
     }
 
+    public void RunLateCMD()
+    {
+        Debug.Log("help");
+        if (!SceneManager.GetActiveScene().name.Equals("ConnectToServer") || serverCommand == null) return;
+        Debug.Log("me");
+
+        string[] aServerCommand = serverCommand.Split('|');
+
+        switch (aServerCommand[0]){
+
+            case "S/OpponentDC":
+
+
+                Debug.Log("here");
+                manager.initialize();
+                manager.SetUpServerMenu("Opponent disconnected");
+
+                for (int i = 1; i < aServerCommand.Length; i++)
+                {
+                    string[] lobbyData = aServerCommand[i].Split('~');
+                    manager.AddNewGameLobby(int.Parse(lobbyData[0]), lobbyData[1]);
+                }
+                serverCommand = null;
+
+                break;
+
+            case "S/Disconnect":
+
+                manager.initialize();
+                CloseSocket();
+                manager.SetUpConnectMenu("Server was closed.");
+                serverCommand = null;
+                break;
+
+            default:
+
+                Debug.Log("Unknown data: " + serverCommand);
+                break;
+
+        }
+    }
+
     private void OnApplicationQuit()
     {
-        CloseSocket("");
+        CloseSocket();
     }
 
     private void OnDisable()
     {
-        CloseSocket("");
+        CloseSocket();
     }
 
-    public void CloseSocket(string message)
+    public void CloseSocket()
     {
         if (!socketReady) return;
-
-        manager.SetUpConnectMenu(message);
 
         writer.Close();
         reader.Close();
