@@ -69,6 +69,11 @@ public class Box : MonoBehaviour
 
     void OnMouseDown()
     {
+        placeMove();
+    }
+
+    public void placeMove()
+    {
         // Update sprite and turn player
         if (type == "Empty")
         {
