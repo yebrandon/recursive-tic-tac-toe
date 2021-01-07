@@ -17,7 +17,7 @@ public class TurnManager : MonoBehaviour
         father.initializeGrid();
         father.enabled = true;
         //father.initializeGrid();
-        father.enableBoxes(true);
+        //father.enableBoxes(true);
     }
 
     // Update is called once per frame
