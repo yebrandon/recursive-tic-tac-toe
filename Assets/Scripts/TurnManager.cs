@@ -17,7 +17,7 @@ public class TurnManager : MonoBehaviour
         father.initializeGrid();
         father.enabled = true;
         //father.initializeGrid();
-        //father.enableBoxes(true);
+        father.enableBoxes(true);
     }
 
     // Update is called once per frame
@@ -55,9 +55,11 @@ public class TurnManager : MonoBehaviour
 
         if (TicTacToe.maxLevel == 1) return;
 
+        // get the TTT the next move must be placed in
         int[,] nextTurnPath = getNextTurnPath(clicked);
         TicTacToe nextTTT = getTicTacToe(nextTurnPath);
 
+        // disables the boxes
         if (freedom)
         {
             father.enableBoxes(false);
@@ -70,12 +72,16 @@ public class TurnManager : MonoBehaviour
 
         if (nextTTT.getType() != "TTT")
         {
-            father.enableBoxes(true);
+            // next box has been won by someone already, go anywhere
+            nextTTT = father;
             freedom = true;
         }
-        else
+
+        if (currentTurn == playerTurn)
         {
+            // your turn to move
             nextTTT.enableBoxes(true);
+
         }
     }
 
