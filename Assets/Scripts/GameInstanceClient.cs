@@ -14,7 +14,20 @@ public class GameInstanceClient : MonoBehaviour
         RectTransform rt = GetComponent<RectTransform>();
         rt.localPosition = new Vector3(0, 261 - i * 30, 0);
 
+        UpdateUI();
+    }
+
+    public void UpdateUI()
+    {
         GetComponent<Transform>().Find("ID").GetComponent<Text>().text = lobbyID.ToString();
         GetComponent<Transform>().Find("Status").GetComponent<Text>().text = status;
+    }
+
+    public void JoinGame()
+    {
+        if (status.Equals("(1/2)"))
+        {
+            GameObject.Find("GameManager").GetComponent<GameManager>().RequestJoinGame(lobbyID);
+        }
     }
 }

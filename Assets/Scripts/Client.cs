@@ -16,6 +16,9 @@ public class Client : MonoBehaviour
     private StreamReader reader;
     public GameManager manager;
 
+    public bool inGame;
+    public bool multiplayer;
+
     private void Start()
     {
         DontDestroyOnLoad(gameObject);
@@ -92,9 +95,9 @@ public class Client : MonoBehaviour
 
             case "S/CurrentGames":
 
-                manager.SetUpLobbyUI("");
+                manager.SetUpServerMenu(aData[aData.Length - 1]);
 
-                for(int i = 1; i < aData.Length; i++)
+                for(int i = 1; i < aData.Length - 1; i++)
                 {
                     string[] lobbyData = aData[i].Split('~');
                     manager.AddNewGameLobby(int.Parse(lobbyData[0]), lobbyData[1]);
@@ -106,9 +109,30 @@ public class Client : MonoBehaviour
 
                 manager.AddNewGameLobby(int.Parse(aData[1]), "(1/2)");
                 break;
+            case "S/GameLimit":
+
+                manager.ServerMessage("Game limit of 16 reached");
+                break;
+
+            case "S/JoinGame":
+
+                manager.SetUpGameLobby(int.Parse(aData[1]), aData[2], aData[3], aData[4], aData[5], int.Parse(aData[6]), aData[7], aData[8]);
+                break;
+
+            case "S/UpdateGameSettings":
+                manager.UpdateGameSettings(aData[3], aData[4], aData[5], int.Parse(aData[6]));
+                break;
 
             case "S/Disconnect":
                 CloseSocket("Server was closed.");
+                break;
+
+            case "S/GameDeleted":
+                manager.DeleteGameLobby(int.Parse(aData[1]));
+                break;
+
+            case "S/UpdateGameStatus":
+                manager.UpdateGameStatus(int.Parse(aData[1]), aData[2]);
                 break;
 
             default:
