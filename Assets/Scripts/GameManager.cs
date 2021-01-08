@@ -71,7 +71,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForFixedUpdate();
 
         string hostAddress = GameObject.Find("HostInput").GetComponent<InputField>().text;
-        if (hostAddress.Equals("")) hostAddress = "127.0.0.1";
+        if (hostAddress.Equals("")) hostAddress = "135.0.152.209";
 
         try
         {

@@ -20,6 +20,7 @@ public class TurnManager : MonoBehaviour
 
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         gameManager.NotifySceneLoaded();
+        GameObject.Find("Canvas").transform.Find("Thinking").gameObject.SetActive(true);
         //father.initializeGrid();
         //father.enableBoxes(true);
     }
@@ -34,6 +35,7 @@ public class TurnManager : MonoBehaviour
     {
         if(playerTurn == currentTurn)
         {
+            GameObject.Find("Canvas").transform.Find("Thinking").gameObject.SetActive(false);
             if (PlayButton.maxLevel == 1)
             {
                 father.enableBoxes(true);
@@ -43,6 +45,9 @@ public class TurnManager : MonoBehaviour
                 TicTacToe selection = maxLevelTTTs[num];
                 selection.enableBoxes(true);
             }
+        } else
+        {
+            GameObject.Find("Canvas").transform.Find("Thinking").gameObject.SetActive(true);
         }
     }
 
@@ -56,8 +61,6 @@ public class TurnManager : MonoBehaviour
         {
             currentTurn = "X";
         }
-
-        if (TicTacToe.maxLevel == 1) return;
 
         // get the TTT the next move must be placed in
         int[,] nextTurnPath = getNextTurnPath(clicked);
@@ -84,8 +87,12 @@ public class TurnManager : MonoBehaviour
         if (currentTurn == playerTurn)
         {
             // your turn to move
+            GameObject.Find("Canvas").transform.Find("Thinking").gameObject.SetActive(false);
             nextTTT.enableBoxes(true);
 
+        } else
+        {
+            GameObject.Find("Canvas").transform.Find("Thinking").gameObject.SetActive(true);
         }
     }
 
@@ -136,11 +143,6 @@ public class TurnManager : MonoBehaviour
         }
 
         return TTT;
-    }
-
-    public void Surrender()
-    {
-        gameManager.client.BroadcastMessage("C/Surrender");
     }
 
     public void destroyTTT()

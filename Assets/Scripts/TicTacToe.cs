@@ -243,7 +243,7 @@ public class TicTacToe : Box
             }
         }
     }
-
+    //[1, 1], [0, 0]
     public void placeMove(int[,] path)
     {
         // place an X or O at the coordinates
@@ -254,8 +254,8 @@ public class TicTacToe : Box
         } else
         {
             // recurse
-            int[,] newPath = new int[path.Length - 1, 2];
-            for (int i = 1; i < path.Length; i++)
+            int[,] newPath = new int[path.GetLength(0) - 1, 2];
+            for (int i = 1; i < path.GetLength(0); i++)
             {
                 newPath[i - 1, 0] = path[i, 0];
                 newPath[i - 1, 1] = path[i, 1];

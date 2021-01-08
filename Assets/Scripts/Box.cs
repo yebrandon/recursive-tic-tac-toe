@@ -33,11 +33,6 @@ public class Box : MonoBehaviour
         spriteRenderer.color = baseColor;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
-
     void OnMouseEnter()
     {
         if (type == "Empty")
@@ -69,6 +64,15 @@ public class Box : MonoBehaviour
 
     void OnMouseDown()
     {
+        string message = "C/Move";
+
+        for(int i = 0; i < path.GetLength(0); i++)
+        {
+            message += "|" + path[i, 0] + "~" + path[i, 1];
+        }
+
+        GameObject.Find("GameManager").GetComponent<GameManager>().client.Send(message);
+
         placeMove();
     }
 
@@ -78,6 +82,15 @@ public class Box : MonoBehaviour
         if (type == "Empty")
         {
             type = turnManager.currentTurn;
+
+            if (turnManager.currentTurn == "X")
+            {
+                spriteRenderer.sprite = XSprite;
+            }
+            else
+            {
+                spriteRenderer.sprite = OSprite;
+            }
 
             highlight(baseColor);
             parent.checkWin(type, path[path.GetLength(0) - 1, 0], path[path.GetLength(0) - 1, 1]);

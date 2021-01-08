@@ -175,11 +175,31 @@ public class Client : MonoBehaviour
                 SceneManager.LoadScene("ConnectToServer");
                 break;
 
+            case "C/Move":
+
+                turnManager.father.placeMove(convertToCoordinates(aData)); 
+                break;
+
             default:
 
                 Debug.Log("Unknown data: " + data);
                 break;
         }
+    }
+
+    private int[,] convertToCoordinates(string[] data)
+    {
+        int[,] coords = new int[TicTacToe.maxLevel, 2];
+
+        for(int i = 0; i < TicTacToe.maxLevel; i++)
+        {
+            string[] meme = data[i + 1].Split('~');
+
+            coords[i, 0] = int.Parse(meme[0]);
+            coords[i, 1] = int.Parse(meme[1]);
+        }
+
+        return coords;
     }
 
     public void RunLateCMD()
